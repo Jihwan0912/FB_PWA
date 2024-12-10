@@ -37,13 +37,18 @@ async function fetchNews(category = null) {
         querySnapshot.forEach((doc) => {
             const news = doc.data();
 
+            // 데이터 확인 및 기본값 처리
+            const title = news.title || "";
+            const description = news.description || "";
+            const link = news.link || "#";
+
             // 뉴스 항목 생성
             const newsItem = document.createElement("li");
             newsItem.innerHTML = `
                 <div class="border-b pb-2 mb-2">
-                    <h3 class="font-bold text-lg">${news.title}</h3>
-                    <p class="text-sm text-gray-600">${news.description}</p>
-                    <a href="${news.link}" target="_blank" class="text-blue-500 hover:underline">기사 보기</a>
+                    <h3 class="font-bold text-lg">${title}</h3>
+                    <p class="text-sm text-gray-600">${description}</p>
+                    <a href="${link}" target="_blank" class="text-blue-500 hover:underline">기사 보기</a>
                 </div>
             `;
             newsContainer.appendChild(newsItem);
@@ -58,6 +63,19 @@ async function fetchNews(category = null) {
         newsContainer.innerHTML = "<p>데이터를 가져오는 중 오류가 발생했습니다.</p>";
     }
 }
+
+// 카테고리 버튼 클릭 이벤트 추가
+document.getElementById("category-buttons").addEventListener("click", (event) => {
+    const category = event.target.getAttribute("data-category");
+    if (category) {
+        fetchNews(category); // 선택한 카테고리의 뉴스 로드
+
+        // 뉴스 리스트 제목 업데이트
+        const categoryTitle = document.getElementById("news-category-title");
+        categoryTitle.textContent = `${category} 뉴스 리스트`;
+    }
+});
+
 
 // Firebase Cloud Messaging 초기화
 const messaging = firebase.messaging();

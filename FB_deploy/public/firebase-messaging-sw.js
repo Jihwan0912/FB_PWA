@@ -13,46 +13,25 @@ const firebaseConfig = {
     measurementId: "G-V98NDB8N6R"
 };
 
-
-
 // Firebase 초기화
 firebase.initializeApp(firebaseConfig);
 
 // Firebase Messaging 초기화
 const messaging = firebase.messaging();
 
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open('pwa-cache').then((cache) => {
-            return cache.addAll([
-                '/',
-                '/index.html',
-                '/app.js',
-                '/icons/icon-192x192.png',
-                '/icons/icon-512x512.png'
-            ]);
-        })
-    );
-});
-
-self.addEventListener('fetch', (event) => {
-    event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
-        })
-    );
-});
-
 // 백그라운드 푸시 알림 처리
 messaging.onBackgroundMessage((payload) => {
-    console.log("백그라운드 푸시 알림:", payload);
+    console.log("백그라운드 푸시 알림 수신:", payload);
 
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon
-    };
+    // `notification` 필드가 있으면 브라우저 기본 알림 생성을 피하기 위해 수동 처리
+    if (payload.data && payload.notification) {
+        const notificationTitle = payload.notification.title;
+        const notificationOptions = {
+            body: payload.notification.body,
+            icon: payload.notification.icon
+        };
 
-    // 서비스 워커를 통해 알림 표시
-    self.registration.showNotification(notificationTitle, notificationOptions);
+        // 서비스 워커 알림 표시
+        self.registration.showNotification(notificationTitle, notificationOptions);
+    }
 });

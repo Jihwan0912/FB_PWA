@@ -1,10 +1,10 @@
 {
-    "name": "My PWA App",
-    "short_name": "PWA App",
+    "name": "MEWS",
+    "short_name": "News_Crawling",
     "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#317EFB",
+    "theme_color": "#7dffdc",
     "icons": [
         {
             "src": "/icons/icon-192x192.png",
